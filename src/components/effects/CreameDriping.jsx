@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 const hexToHSL = (hex) => {
   let r = 0, g = 0, b = 0;
@@ -33,13 +33,19 @@ const hexToHSL = (hex) => {
 };
 
 const CreameDriping = ({ 
-  color = "#EC4899", // Default Pink
-  speed = 1.5,       // Flow speed
-  onComplete         // Optional callback when animation ends
+  color = "#EC4899", 
+  speed = 1.5,       
+  onComplete        
 }) => {
   const canvasRef = useRef(null);
   
-  // Convert prop color to HSL once
+  const [staticBgColor, setStaticBgColor] = useState('transparent');
+  
+  // FIX: Initialize with 'transparent' instead of 'color'.
+  // This ensures that on the very first load, we drip over a transparent background 
+  // (revealing the Hero's pink BG), making the drip visible.
+  const prevColorRef = useRef('transparent');
+
   const { h, s, l } = hexToHSL(color);
 
   const stateRef = useRef({
@@ -52,36 +58,36 @@ const CreameDriping = ({
   });
 
   useEffect(() => {
+    setStaticBgColor(prevColorRef.current);
+    prevColorRef.current = color;
+  }, [color]);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
     const state = stateRef.current;
-    state.isFinished = false; // Reset state on effect run
+    state.isFinished = false; 
 
-    // --- Configuration ---
     const LAYER_COUNT = 5; 
-    const POINT_COUNT = 15; // Smoothness
+    const POINT_COUNT = 15;
 
-    // --- Helper: Create Shape Layers ---
     const createShapes = () => {
       state.shapes = [];
       
       for (let index = 0; index < LAYER_COUNT; index++) {
         const shape = {
           points: [],
-          // Opacity: Back layers slightly transparent, Front layer solid (1)
           alpha: index === 0 ? 1 : 1 - (index / (LAYER_COUNT + 2)), 
-          // Color: Back layers are darker to create depth
           layerHue: h, 
           layerSat: s,
-          layerLight: Math.max(l - (index * 8), 10), // Reduce lightness for back layers
+          layerLight: Math.max(l - (index * 8), 10), 
         };
 
         const segmentWidth = state.width / (POINT_COUNT - 1);
 
         for (let i = 0; i < POINT_COUNT + 2; i++) {
-          // Start Y: Higher up so they drop in from above
           const yStart = -100 + (Math.random() * 150) - (index * 80); 
           const rad = Math.random() * 40;
 
@@ -96,41 +102,34 @@ const CreameDriping = ({
         }
         state.shapes.push(shape);
       }
-      state.shapes.reverse(); // Draw back layers first
+      state.shapes.reverse(); 
     };
 
-    // --- Draw Function ---
     const draw = () => {
       if (state.isFinished) return;
 
-      // Clear canvas
       ctx.clearRect(0, 0, state.width, state.height);
       
       let shapesFinishedCount = 0;
 
       state.shapes.forEach((shape) => {
-        // 1. Render
         drawDripShape(shape);
 
-        // 2. Physics & Bounds Check
         let minLayerY = Infinity; 
 
         shape.points.forEach((point) => {
           point.angle += point.speed; 
-          // Move point down + wobble
           point.y = point.oy + (Math.sin(point.angle) * point.rad);
-          point.oy += state.ySpeed * speed; // Gravity falls forever
+          point.oy += state.ySpeed * speed;
 
           if (point.y < minLayerY) minLayerY = point.y;
         });
 
-        // Check if this specific layer has fully passed the bottom of the screen
         if (minLayerY > state.height) {
             shapesFinishedCount++;
         }
       });
 
-      // Stop Condition: If all layers are past the bottom height
       if (shapesFinishedCount === state.shapes.length) {
         state.isFinished = true;
         cancelAnimationFrame(state.animationFrameId);
@@ -140,15 +139,13 @@ const CreameDriping = ({
       }
     };
 
-    // --- Render Path ---
     const drawDripShape = (shape) => {
       ctx.fillStyle = `hsla(${shape.layerHue}, ${shape.layerSat}%, ${shape.layerLight}%, ${shape.alpha})`;
       
       ctx.beginPath();
-      ctx.moveTo(0, 0); // Top Left
+      ctx.moveTo(0, 0); 
       ctx.lineTo(shape.points[0].x, shape.points[0].y);
 
-      // Curves
       for (let i = 0; i < shape.points.length - 2; i++) {
         const p1 = shape.points[i];
         const p2 = shape.points[i + 1];
@@ -161,12 +158,11 @@ const CreameDriping = ({
       const veryLast = shape.points[shape.points.length - 1];
       ctx.quadraticCurveTo(last.x, last.y, veryLast.x, veryLast.y);
 
-      ctx.lineTo(state.width, 0); // Top Right
-      ctx.lineTo(0, 0); // Close Path
+      ctx.lineTo(state.width, 0); 
+      ctx.lineTo(0, 0); 
       ctx.fill();
     };
 
-    // --- Resize ---
     const handleResize = () => {
       const parent = canvas.parentElement;
       if(parent) {
@@ -190,10 +186,15 @@ const CreameDriping = ({
   }, [color, speed, h, s, l, onComplete]);
 
   return (
-    <canvas 
-      ref={canvasRef} 
-      className="block w-full h-full pointer-events-none"
-    />
+    <div 
+      style={{ backgroundColor: staticBgColor }} 
+      className="relative w-full h-full transition-colors duration-0"
+    >
+      <canvas 
+        ref={canvasRef} 
+        className="block w-full h-full pointer-events-none"
+      />
+    </div>
   );
 };
 
