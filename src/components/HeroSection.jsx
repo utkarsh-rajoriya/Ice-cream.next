@@ -58,6 +58,8 @@ const HeroSection = () => {
     },
   ];
 
+  
+
   return (
     <div className="relative overflow-hidden h-screen w-full bg-[#FF69B4]">
       {/* Background Drip */}
@@ -70,20 +72,16 @@ const HeroSection = () => {
       </div>
 
       {/* MAIN GRID */}
-      {/* We use grid to manage the side columns, but the center is dedicated to the image */}
       <div className="absolute z-10 h-full w-full grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr]">
+        
         {/* Column-1 (Left Spacer) */}
         <div className="hidden lg:block border-2 border-indigo-500/0"></div>
 
-        {/* Column-2 (THE STAGE) - Centered Flex */}
-        {/* w-full on mobile, auto on desktop to hug content */}
+        {/* Column-2 (THE STAGE) */}
         <div className="relative w-full h-full flex justify-center items-center">
-          {/* ANCHOR CONTAINER: Everything positions relative to this box */}
+          
           <div className="relative flex justify-between gap-5 space-x-2.5 items-center">
-            {/* 1. TEXT: ICE */}
-            {/* Z-0: Bottom Layer (Behind Image) */}
-            {/* right-1/2: Starts at center, pushes left */}
-            {/* translate-x-1/4: Nudges it slightly right to OVERLAP with image */}
+            {/* 1. TEXT: ICE (Your exact styling) */}
             <motion.h1
               className="absolute left-[-3rem] md:left-[-5rem] lg:left-[-9rem] mb-[6rem] text-[7rem] md:text-[10rem] lg:text-[13rem] font-bold text-white whitespace-nowrap z-0 select-none"
               style={{ fontFamily: "lobster" }}
@@ -94,46 +92,53 @@ const HeroSection = () => {
               ICE
             </motion.h1>
 
-            {/* 2. IMAGE (THE CENTERPIECE) */}
-            {/* Z-10: Middle Layer (On top of ICE, Below CREAM) */}
-            {/* <div className="relative"> */}
-            <motion.div
-              className="relative z-10 w-[25rem] h-[35rem] md:w-[40rem] md:h-[50rem] lg:w-[45rem] lg:h-[52rem]"
-              key={current}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Image
-                src={IceCreams[current].image}
-                alt="Ice cream image"
-                fill
-                className="object-contain drop-shadow-2xl"
-                priority
-              />
-            </motion.div>
+            {/* 2. IMAGES CENTER (Your exact size + split logic) */}
+            <div className="relative w-[25rem] h-[35rem] md:w-[40rem] md:h-[50rem] lg:w-[45rem] lg:h-[52rem]">
+              
+              {/* Back Image (Moves Left & Rotates Left) */}
+              <motion.div
+                className="absolute top-0 left-0 w-full h-full z-10" 
+                key={`back-${current}`}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={
+                  dripFinished
+                    ? { scale: 1, opacity: 1, x: -30, rotate: -6 }
+                    : { scale: 1, opacity: 1, x: 0, rotate: 0 }
+                }
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
+                <Image
+                  src={IceCreams[current].image}
+                  alt="Ice cream back"
+                  fill
+                  className="object-contain drop-shadow-2xl grayscale-[30%]"
+                  priority
+                />
+              </motion.div>
 
-            {/* <motion.div 
-              className="relative z-10 w-[25rem] h-[35rem] md:w-[28rem] md:h-[38rem]"
-              key={current}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Image
-                src={IceCreams[current].image}
-                alt="Ice cream image"
-                fill
-                className="object-contain drop-shadow-2xl"
-                priority
-              />
-            </motion.div>
-            </div> */}
+              {/* Front Image (Moves Right & Rotates Right) */}
+              <motion.div
+                className="relative w-full h-full z-20"
+                key={`front-${current}`}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={
+                  dripFinished
+                    ? { scale: 1, opacity: 1, x: 20, rotate: 6 }
+                    : { scale: 1, opacity: 1, x: 0, rotate: 0 }
+                }
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
+                <Image
+                  src={IceCreams[current].image}
+                  alt="Ice cream front"
+                  fill
+                  className="object-contain drop-shadow-2xl"
+                  priority
+                />
+              </motion.div>
+            </div>
 
-            {/* 3. TEXT: CREAM */}
-            {/* Z-20: Top Layer (On top of Image) */}
-            {/* left-1/2: Starts at center, pushes right */}
-            {/* -translate-x-1/4: Nudges it slightly left to OVERLAP with image */}
+            {/* 3. TEXT: CREAM (Your exact styling) */}
             <motion.h1
               className="absolute right-[-7rem] md:right-[-10rem] lg:right-[-30rem] mt-[16rem] md:mt-[20rem] text-[6rem] md:text-[8rem] lg:text-[13rem] font-bold text-white whitespace-nowrap z-20"
               style={{ fontFamily: "lobster" }}
