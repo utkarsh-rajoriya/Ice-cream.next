@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreameDriping from "./effects/CreameDriping";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -18,8 +18,8 @@ const HeroSection = () => {
         "Sweet, sun-ripened strawberries are crushed and folded into our signature sweet cream base. A blushing pink masterpiece.",
       price: 19.2,
       image: "/icecreams/strawberry-cream.png",
-      cream: "#C53030",
-      bg: "#BC323A",
+      cream: "#BC323A",
+      bg: "#C53030",
     },
     {
       flavour: "Vanilla",
@@ -58,8 +58,8 @@ const HeroSection = () => {
         "Transport your senses to the tropics with the golden nectar of Alphonso mangoes. Smooth, luscious, and intensely aromatic.",
       price: 12.5,
       image: "/icecreams/mango-cream.png",
-      cream: "#DD6B20",
-      bg: "#AB4705",
+      cream: "#AB4705",
+      bg: "#DD6B20",
     },
   ];
 
@@ -72,7 +72,7 @@ const HeroSection = () => {
   };
 
   return (
-    <div className="relative overflow-hidden h-screen w-full bg-[#FF69B4]">
+    <div className="relative overflow-hidden h-screen w-full bg-[#002455]">
       {/* Background Drip */}
       <div className="absolute z-0 w-full h-full min-h-screen">
         <CreameDriping
@@ -82,18 +82,13 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* 1. Add Navbar Here */}
+      {/* Navbar */}
       <Navbar />
 
       {/* MAIN GRID */}
-      {/* Changed grid-cols-1 to use absolute positioning on mobile for side columns */}
       <div className="absolute max-md:mt-5 z-10 h-full w-full grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr]">
-        {/* =========================================
-            Column-1: FLAVOUR & PRICE (Left Side)
-           ========================================= */}
-        {/* Mobile: Absolute Top | Desktop: Relative Left Grid */}
-        <div className="absolute top-0 left-0 w-full lg:static lg:w-auto h-auto lg:h-full flex flex-col justify-start lg:justify-between p-6 pt-10 lg:pt-32 lg:pb-16 lg:pl-12 z-40 pointer-events-none">
-          {/* Top Section: Flavour Name */}
+        {/* Column 1 */}
+        <div className="absolute top-0 left-0 w-full lg:static lg:w-auto h-auto lg:h-full flex flex-col justify-start lg:justify-between p-6 pt-10 md:pt-25 lg:pt-32 lg:pb-16 lg:pl-12 z-40 pointer-events-none">
           <div className="pointer-events-auto">
             <motion.div
               key={`info-${current}`}
@@ -113,10 +108,8 @@ const HeroSection = () => {
             </motion.div>
           </div>
 
-          {/* Price (Hidden on mobile to save space, or remove 'hidden' to show under title) */}
-          {/* Currently showing on Desktop at bottom, Mobile at top under title */}
           <motion.div
-            className="mt-4 lg:mt-0 pointer-events-auto flex items-center gap-6" // Added flex & gap to align price and button
+            className="mt-4 lg:mt-0 pointer-events-auto flex items-center gap-6"
             key={`price-${current}`}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -135,14 +128,11 @@ const HeroSection = () => {
           </motion.div>
         </div>
 
-        {/* =========================================
-            Column-2: THE STAGE (Center)
-           ========================================= */}
+        {/* Column 2 */}
         <div className="relative w-full h-full flex justify-center items-center">
           <div className="relative flex justify-between gap-5 space-x-2.5 items-center">
-            {/* 1. TEXT: ICE */}
             <motion.h1
-              className="absolute left-[-3rem] md:left-[-5rem] lg:left-[-9rem] mb-[6rem] text-[7rem] md:text-[10rem] lg:text-[13rem] font-bold whitespace-nowrap z-0 select-none bg-gradient-to-b from-white to-white/20 bg-clip-text text-transparent blur-[1px]"
+              className="absolute left-[-3rem] md:left-[-5rem] lg:left-[-9rem] mb-[6rem] text-[7rem] md:text-[10rem] lg:text-[13rem] font-bold whitespace-nowrap z-0 select-none bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent blur-[1px]"
               style={{ fontFamily: "lobster" }}
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: "25%", opacity: 1 }}
@@ -151,7 +141,7 @@ const HeroSection = () => {
               ICE
             </motion.h1>
 
-            {/* 2. IMAGES CENTER */}
+            {/* Images */}
             <div className="relative w-[25rem] h-[35rem] md:w-[40rem] md:h-[50rem] lg:w-[45rem] lg:h-[52rem]">
               {/* Back Image */}
               <motion.div
@@ -196,7 +186,6 @@ const HeroSection = () => {
               </motion.div>
             </div>
 
-            {/* 3. TEXT: CREAM */}
             <motion.h1
               className="absolute right-[-7rem] md:right-[-10rem] lg:right-[-30rem] mt-[16rem] md:mt-[20rem] text-[6rem] md:text-[8rem] lg:text-[13rem] font-bold whitespace-nowrap z-20 bg-gradient-to-b from-white to-white/50 bg-clip-text text-transparent blur-[1px]"
               style={{ fontFamily: "lobster" }}
@@ -209,10 +198,7 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* =========================================
-            Column-3: DESCRIPTION & NAV (Right Side)
-           ========================================= */}
-        {/* Mobile: Absolute Bottom | Desktop: Relative Right Grid */}
+        {/* Column 3 */}
         <div className="absolute bottom-0 right-0 w-full lg:static lg:w-auto h-auto lg:h-full flex flex-col justify-end p-6 pb-10 lg:pb-16 lg:pr-12 z-40 pointer-events-none">
           <div className="flex flex-col items-center lg:items-end text-center lg:text-right pointer-events-auto">
             {/* Description */}
@@ -221,17 +207,35 @@ const HeroSection = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-black/10 lg:bg-transparent lg:mb-50  p-4 lg:p-0 rounded-2xl backdrop-blur-sm lg:backdrop-blur-none"
+              className="relative overflow-hidden bg-black/10 lg:bg-transparent lg:mb-60 p-4 lg:p-0 rounded-2xl backdrop-blur-sm lg:backdrop-blur-none"
             >
-              <h3 className="text-white font-bold text-xl lg:text-2xl mb-1 lg:mb-3">
-                Description
-              </h3>
-              <p className="text-white/90 text-sm lg:text-lg leading-relaxed max-w-xs lg:max-w-sm ml-auto mr-auto lg:mr-0">
-                {IceCreams[current].description}
-              </p>
+              {/* Shine Effect */}
+              <motion.div
+                className="absolute w-[100%] h-20 bg-gradient-to-r from-transparent via-white/40 to-transparent z-0"
+                style={{ rotate: 45 }}
+                initial={{ bottom: "-500%", left: "-500%" }}
+                animate={{ bottom: "100%", left: "100%" }}
+                transition={{
+                  duration: 2.5,
+                  delay: 0.8,
+                  ease: "easeInOut",
+                }}
+              />
+
+              <div className="relative z-10">
+                <h3 className="text-white font-serif italic font-bold text-2xl lg:text-3xl mb-2 opacity-90 drop-shadow-md">
+                  Flavor Profile
+                </h3>
+                <div className="mb-1 flex justify-center lg:justify-end">
+                  <hr className=" w-[90%]  text-white" />
+                </div>
+                <p className="text-white/90 text-sm lg:text-lg leading-relaxed max-w-xs lg:max-w-sm ml-auto mr-auto lg:mr-0">
+                  {IceCreams[current].description}
+                </p>
+              </div>
             </motion.div>
 
-            {/* Navigation Buttons */}
+            {/* Buttons */}
             <div className="flex gap-4 mt-6 lg:mt-10">
               <button
                 onClick={handlePrev}
