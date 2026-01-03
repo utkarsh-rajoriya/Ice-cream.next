@@ -98,7 +98,7 @@ const HeroSection = () => {
       <div className="absolute z-0 w-full h-full min-h-screen">
         <CreameDriping
           color={IceCreams[current].bg}
-          speed={1}
+          speed={1.5}
           onComplete={() => setDripFinished(true)}
         />
       </div>
@@ -220,7 +220,7 @@ const HeroSection = () => {
         </div>
 
         {/* Column 3 */}
-        <div className="absolute bottom-0 right-0 w-full lg:static lg:w-auto h-auto lg:h-full flex flex-col justify-end max-md:mb-20 lg:pb-16 lg:pr-12 z-40 pointer-events-none">
+        <div className="absolute bottom-0 right-0 w-full lg:static lg:w-auto h-auto lg:h-full flex flex-col justify-end max-md:mb-15 lg:pb-16 lg:pr-12 z-40 pointer-events-none">
           <div className="flex flex-col items-center lg:items-end text-center lg:text-right pointer-events-auto">
             {/* Description */}
             <motion.div

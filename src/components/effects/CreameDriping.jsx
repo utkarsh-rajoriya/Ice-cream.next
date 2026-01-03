@@ -38,13 +38,16 @@ const CreameDriping = ({
   onComplete        
 }) => {
   const canvasRef = useRef(null);
-  
   const [staticBgColor, setStaticBgColor] = useState('transparent');
-  
-  // FIX: Initialize with 'transparent' instead of 'color'.
-  // This ensures that on the very first load, we drip over a transparent background 
-  // (revealing the Hero's pink BG), making the drip visible.
   const prevColorRef = useRef('transparent');
+  const onCompleteRef = useRef(onComplete);
+  
+  // Track previous dimensions
+  const prevSizeRef = useRef({ w: 0, h: 0 });
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   const { h, s, l } = hexToHSL(color);
 
@@ -57,17 +60,26 @@ const CreameDriping = ({
     isFinished: false
   });
 
+  // 1. Handle Background Color Swap
   useEffect(() => {
     setStaticBgColor(prevColorRef.current);
     prevColorRef.current = color;
+    
+    // FIX: When color changes, we MUST reset the size tracker.
+    // This forces handleResize to run and create new shapes, 
+    // even if the screen width hasn't strictly changed.
+    prevSizeRef.current = { w: 0, h: 0 };
+    
   }, [color]);
 
+  // 2. Main Animation Loop
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
     const state = stateRef.current;
+    
     state.isFinished = false; 
 
     const LAYER_COUNT = 5; 
@@ -75,7 +87,6 @@ const CreameDriping = ({
 
     const createShapes = () => {
       state.shapes = [];
-      
       for (let index = 0; index < LAYER_COUNT; index++) {
         const shape = {
           points: [],
@@ -84,13 +95,10 @@ const CreameDriping = ({
           layerSat: s,
           layerLight: Math.max(l - (index * 8), 10), 
         };
-
         const segmentWidth = state.width / (POINT_COUNT - 1);
-
         for (let i = 0; i < POINT_COUNT + 2; i++) {
           const yStart = -100 + (Math.random() * 150) - (index * 80); 
           const rad = Math.random() * 40;
-
           shape.points.push({
             x: i * segmentWidth, 
             y: yStart,
@@ -111,29 +119,22 @@ const CreameDriping = ({
       ctx.clearRect(0, 0, state.width, state.height);
       
       let shapesFinishedCount = 0;
-
       state.shapes.forEach((shape) => {
         drawDripShape(shape);
-
         let minLayerY = Infinity; 
-
         shape.points.forEach((point) => {
           point.angle += point.speed; 
           point.y = point.oy + (Math.sin(point.angle) * point.rad);
           point.oy += state.ySpeed * speed;
-
           if (point.y < minLayerY) minLayerY = point.y;
         });
-
-        if (minLayerY > state.height) {
-            shapesFinishedCount++;
-        }
+        if (minLayerY > state.height) shapesFinishedCount++;
       });
 
       if (shapesFinishedCount === state.shapes.length) {
         state.isFinished = true;
         cancelAnimationFrame(state.animationFrameId);
-        if(onComplete) onComplete();
+        if(onCompleteRef.current) onCompleteRef.current();
       } else {
         state.animationFrameId = requestAnimationFrame(draw);
       }
@@ -141,11 +142,9 @@ const CreameDriping = ({
 
     const drawDripShape = (shape) => {
       ctx.fillStyle = `hsla(${shape.layerHue}, ${shape.layerSat}%, ${shape.layerLight}%, ${shape.alpha})`;
-      
       ctx.beginPath();
       ctx.moveTo(0, 0); 
       ctx.lineTo(shape.points[0].x, shape.points[0].y);
-
       for (let i = 0; i < shape.points.length - 2; i++) {
         const p1 = shape.points[i];
         const p2 = shape.points[i + 1];
@@ -153,11 +152,9 @@ const CreameDriping = ({
         const yc = (p1.y + p2.y) / 2;
         ctx.quadraticCurveTo(p1.x, p1.y, xc, yc);
       }
-
       const last = shape.points[shape.points.length - 2];
       const veryLast = shape.points[shape.points.length - 1];
       ctx.quadraticCurveTo(last.x, last.y, veryLast.x, veryLast.y);
-
       ctx.lineTo(state.width, 0); 
       ctx.lineTo(0, 0); 
       ctx.fill();
@@ -166,34 +163,55 @@ const CreameDriping = ({
     const handleResize = () => {
       const parent = canvas.parentElement;
       if(parent) {
-        canvas.width = parent.clientWidth;
-        canvas.height = parent.clientHeight;
+        const newWidth = parent.clientWidth;
+        const newHeight = parent.clientHeight;
+
+        // CHECK: Only ignore resize if width hasn't changed AND we have a previous width recorded.
+        // Since we reset prevSizeRef to {0,0} when color changes (line 70), 
+        // this check will FAIL on color change (allowing animation to start)
+        // but PASS on mobile scroll (preventing animation restart).
+        if (Math.abs(newWidth - prevSizeRef.current.w) < 10 && prevSizeRef.current.w !== 0) {
+            return;
+        }
+
+        prevSizeRef.current = { w: newWidth, h: newHeight };
+
+        canvas.width = newWidth;
+        canvas.height = newHeight;
         state.width = canvas.width;
         state.height = canvas.height;
         state.ySpeed = 1 * (state.height / 300);
-        createShapes();
+        
+        if (!state.isFinished) {
+            createShapes();
+        } else {
+            // Fill background if finished to avoid flicker
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = `hsl(${h}, ${s}%, ${l}%)`;
+            ctx.fillRect(0,0, newWidth, newHeight);
+        }
       }
     };
 
     window.addEventListener('resize', handleResize);
     handleResize(); 
-    draw(); 
+    
+    if(!state.isFinished) {
+      draw();
+    }
 
     return () => {
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(state.animationFrameId);
     };
-  }, [color, speed, h, s, l, onComplete]);
+  }, [color, speed, h, s, l]); 
 
   return (
     <div 
       style={{ backgroundColor: staticBgColor }} 
       className="relative w-full h-full transition-colors duration-0"
     >
-      <canvas 
-        ref={canvasRef} 
-        className="block w-full h-full pointer-events-none"
-      />
+      <canvas ref={canvasRef} className="block w-full h-full pointer-events-none" />
     </div>
   );
 };
