@@ -71,6 +71,27 @@ const HeroSection = () => {
     setCurrent((prev) => (prev - 1 + IceCreams.length) % IceCreams.length);
   };
 
+  useEffect(() => {
+    const preloadImages = async () => {
+      try {
+        await new Promise((resolve, reject) => {
+          const img1 = new window.Image();
+          img1.src = IceCreams[current].image;
+          img1.onload = resolve;
+          img1.onerror = reject;
+        });
+
+        const nextIndex = (current + 1) % IceCreams.length;
+        const img2 = new window.Image();
+        img2.src = IceCreams[nextIndex].image;
+      } catch (error) {
+        console.error("Image preloading failed:", error);
+      }
+    };
+
+    preloadImages();
+  }, [current]);
+
   return (
     <div className="relative overflow-hidden h-screen w-full bg-[#002455]">
       {/* Background Drip */}
@@ -86,7 +107,7 @@ const HeroSection = () => {
       <Navbar />
 
       {/* MAIN GRID */}
-      <div className="absolute max-md:mt-5 z-10 h-full w-full grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr]">
+      <div className="h-screen absolute max-md:mt-5 z-10 h-full w-full grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr]">
         {/* Column 1 */}
         <div className="absolute top-0 left-0 w-full lg:static lg:w-auto h-auto lg:h-full flex flex-col justify-start lg:justify-between p-6 pt-10 md:pt-25 lg:pt-32 lg:pb-16 lg:pl-12 z-40 pointer-events-none">
           <div className="pointer-events-auto">
@@ -129,7 +150,7 @@ const HeroSection = () => {
         </div>
 
         {/* Column 2 */}
-        <div className="relative w-full h-full flex justify-center items-center">
+        <div className="relative max-md:-mt-10 w-full h-full flex justify-center items-center">
           <div className="relative flex justify-between gap-5 space-x-2.5 items-center">
             <motion.h1
               className="absolute left-[-3rem] md:left-[-5rem] lg:left-[-9rem] mb-[6rem] text-[7rem] md:text-[10rem] lg:text-[13rem] font-bold whitespace-nowrap z-0 select-none bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent blur-[1px]"
@@ -199,7 +220,7 @@ const HeroSection = () => {
         </div>
 
         {/* Column 3 */}
-        <div className="absolute bottom-0 right-0 w-full lg:static lg:w-auto h-auto lg:h-full flex flex-col justify-end p-6 pb-10 lg:pb-16 lg:pr-12 z-40 pointer-events-none">
+        <div className="absolute bottom-0 right-0 w-full lg:static lg:w-auto h-auto lg:h-full flex flex-col justify-end max-md:mb-20 lg:pb-16 lg:pr-12 z-40 pointer-events-none">
           <div className="flex flex-col items-center lg:items-end text-center lg:text-right pointer-events-auto">
             {/* Description */}
             <motion.div
@@ -236,7 +257,7 @@ const HeroSection = () => {
             </motion.div>
 
             {/* Buttons */}
-            <div className="flex gap-4 mt-6 lg:mt-10">
+            <div className="flex gap-4 mt-3 lg:mt-10">
               <button
                 onClick={handlePrev}
                 className="w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-white/10 hover:bg-white/30 backdrop-blur-md flex items-center justify-center text-white transition-all border border-white/40 hover:scale-110 active:scale-95"
