@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🍦 Brain Freeze
 
-## Getting Started
+<div align="center">
 
-First, run the development server:
+  ![Banner](public/icecreams/strawberry-cream.png)
+  <br />
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+  ### *The sweetest ice cream experience on the web.*
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+  <br />
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+  Dive into a world of melting colors, premium flavors, and fluid animations. <br/>
+  **Brain Freeze** isn't just a store; it's a digital dessert for your eyes.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+  <br />
+  <br />
 
-## Learn More
+  ![Next.js](https://img.shields.io/badge/-Next.js-black?style=flat&logo=next.js&logoColor=white)
+  ![Framer Motion](https://img.shields.io/badge/-Framer_Motion-0055FF?style=flat&logo=framer&logoColor=white)
+  ![Tailwind](https://img.shields.io/badge/-Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)
 
-To learn more about Next.js, take a look at the following resources:
+</div>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<br />
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🍓 The Experience
 
-## Deploy on Vercel
+We’ve crafted an immersive interface where every flavor feels alive.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* **Liquid Drip Animations:** Watch the background physically melt and flow as you switch between flavors.
+* **Glassmorphism Design:** Frosted, translucent layers that let the rich colors of our ice creams shine through.
+* **Dynamic Atmosphere:** From the blushing pink of Strawberry to the royal gold of Mango, the entire theme adapts to your craving.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<br />
+
+## 🍧 Premium Selection
+
+Our digital freezer is stocked with the finest hand-picked creations:
+
+| | | |
+|:-------------------------:|:-------------------------:|:-------------------------:|
+| <img src="public/icecreams/strawberry-cream.png" width="200" /> | <img src="public/icecreams/vanilla-cream.png" width="200" /> | <img src="public/icecreams/chocolate-cream.png" width="200" /> |
+| **Garden Fresh Strawberry** | **Madagascan Vanilla** | **Belgian Chocolate** |
+
+<br />
+
+## ✨ Visual Highlights
+
+> *"Experience the pure essence of elegance with our premium ice creams. Made from Madagascar vanilla beans, Belgian cocoa, and fresh garden strawberries."*
+
+The website features a custom "Shine" effect that glides across the flavor profiles, highlighting the premium nature of every scoop.
+
+<br />
+<br />
+
+<div align="center">
+
+  Designed & Developed with 🤍 by **Utkarsh Rajoriya**
+
+</div>
