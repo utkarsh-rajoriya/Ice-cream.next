@@ -71,29 +71,22 @@ const HeroSection = () => {
     setCurrent((prev) => (prev - 1 + IceCreams.length) % IceCreams.length);
   };
 
-  useEffect(() => {
-    const preloadImages = async () => {
-      try {
-        await new Promise((resolve, reject) => {
-          const img1 = new window.Image();
-          img1.src = IceCreams[current].image;
-          img1.onload = resolve;
-          img1.onerror = reject;
-        });
+  const PreloadNextImage = ({ src }) => (
+    <Image
+      src={src}
+      alt=""
+      width={1}
+      height={1}
+      loading="eager"
+      className="hidden"
+    />
+  );
 
-        const nextIndex = (current + 1) % IceCreams.length;
-        const img2 = new window.Image();
-        img2.src = IceCreams[nextIndex].image;
-      } catch (error) {
-        console.error("Image preloading failed:", error);
-      }
-    };
-
-    preloadImages();
-  }, [current]);
+  const nextIndex = (current + 1) % IceCreams.length;
 
   return (
     <div className="relative overflow-hidden h-screen w-full bg-[#002455]">
+      <PreloadNextImage src={IceCreams[nextIndex].image} />
       {/* Background Drip */}
       <div className="absolute z-0 w-full h-full min-h-screen">
         <CreameDriping
@@ -102,10 +95,8 @@ const HeroSection = () => {
           onComplete={() => setDripFinished(true)}
         />
       </div>
-
       {/* Navbar */}
       <Navbar />
-
       {/* MAIN GRID */}
       <div className="h-screen absolute max-md:mt-5 z-10 h-full w-full grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr]">
         {/* Column 1 */}
@@ -180,8 +171,8 @@ const HeroSection = () => {
                   src={IceCreams[current].image}
                   alt="Ice cream back"
                   fill
-                  className="object-contain drop-shadow-2xl grayscale-[30%]"
-                  priority
+                  className="object-contain drop-shadow-2xl grayscale-30"
+                  priority={current === 0}
                 />
               </motion.div>
 
@@ -202,7 +193,7 @@ const HeroSection = () => {
                   alt="Ice cream front"
                   fill
                   className="object-contain drop-shadow-2xl"
-                  priority
+                  priority={current === 0}
                 />
               </motion.div>
             </div>

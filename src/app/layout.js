@@ -16,6 +16,7 @@ const anton = Anton({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://ice-cream-next.vercel.app"),
   title: {
     default: "Brain Freeze | Premium Hand-Crafted Ice Cream",
     template: "%s | Brain Freeze",
@@ -65,6 +66,10 @@ export default function RootLayout({ children }) {
       className={`${lobster.variable} ${anton.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <link rel="preload" as="image" href="/icecreams/strawberry-cream.png" />
+      </head>
+
       <body suppressHydrationWarning>{children}</body>
     </html>
   );
